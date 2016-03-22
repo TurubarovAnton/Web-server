@@ -1,0 +1,41 @@
+{
+	"port": 80,
+	"root": "D:/Qt/Projects/Web application",
+	"defaultUrl": "/application.html",
+	"securityUrl": "/security.html",	
+		
+	"contentTypes": {  
+		"htm": "text/html",
+		"html": "text/html",
+		"js": "text/javascript",
+		"css": "text/css",
+		"ttf": "font/ttf",
+		"woff": "font/woff",
+		"svg": "font/svg",
+		"png": "image/png",
+		"jpg": "image/jpg"
+	},
+	
+	"connectionParameters": {
+		"name": "Master", 
+		"driver": "QPSQL",
+		"port": 5432,
+		"host": "localhost",
+		"database": "master",
+		"user": "postgres",
+		"password": "C-major"
+	},
+	
+	"paths": [
+		"D:\Qt\5.5\mingw492_32\plugins"],	
+	
+	"security": [
+		"/application.html",
+		"/data",
+		"/metadata"]	
+}
+
+
+
+
+
