@@ -16,15 +16,15 @@
 		"jpg": "image/jpg"
 	},
 	
-	"connectionParameters": {
+	"connections": [{
 		"name": "Master", 
 		"driver": "QPSQL",
 		"port": 5432,
 		"host": "localhost",
 		"database": "master",
-		"user": "postgres",
-		"password": "C-major"
-	},
+		"user": "sysdba",
+		"password": "masterkey"
+	}],
 	
 	"paths": [
 		"D:\Qt\5.5\mingw492_32\plugins"],	

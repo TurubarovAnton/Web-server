@@ -5,6 +5,7 @@
 #include <QCoreApplication>
 #include <QSqlDatabase>
 #include <QStringList>
+#include <QVector>
 #include <QHash>
 #include <webserversettings.h>
 #include <webserver.h>
@@ -18,11 +19,11 @@ class Application : public QCoreApplication
 
         WebServer * server;
 
-        static void createDatabaseConnection(QHash<QString, QString> connectionParameters);
+        static void createDatabaseConnection(QHash<QString, QString> parameters);
     private:
         const QEvent::Type ApplicationStart = (QEvent::Type)(QEvent::User + 1);
 
-        void addApplicationPaths(QStringList paths);
+        void addPaths(QStringList paths);
     protected:
         bool event(QEvent * event);
 

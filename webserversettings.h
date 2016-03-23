@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QVector>
 #include <iostream>
 #include <QTextStream>
 #include <QHash>
@@ -25,7 +26,7 @@ class WebServerSettings : public QObject
         QString securityUrl;
 
         QHash<QString, QString> contentTypes;
-        QHash<QString, QString> connectionParameters;
+        QVector<QHash<QString, QString>> connections;
 
         QStringList paths;
         QStringList security;
@@ -33,7 +34,7 @@ class WebServerSettings : public QObject
     private:
         void load();
         void parseContentTypes(QJsonObject jsonObject);
-        void parseConnectionParameters(QJsonObject jsonObject);
+        void parseConnections(QJsonArray jsonArray);
         void parsePaths(QJsonArray jsonArray);
         void parseSecurity(QJsonArray jsonArray);
 };

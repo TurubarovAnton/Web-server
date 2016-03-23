@@ -19,9 +19,8 @@ void WebServerSettings::load()
             defaultUrl = jsonObject.value("defaultUrl").toString().trimmed();
             securityUrl = jsonObject.value("securityUrl").toString().trimmed();
 
-            parseConnectionParameters(jsonObject.value("connectionParameters").toObject());
             parseContentTypes(jsonObject.value("contentTypes").toObject());
-
+            parseConnections(jsonObject.value("connections").toArray());
             parsePaths(jsonObject.value("paths").toArray());
             parseSecurity(jsonObject.value("security").toArray());
         }
@@ -38,11 +37,16 @@ void WebServerSettings::parseContentTypes(QJsonObject jsonObject)
         contentTypes.insert(key, jsonObject.value(key).toString().trimmed());
 }
 
-void WebServerSettings::parseConnectionParameters(QJsonObject jsonObject)
+void WebServerSettings::parseConnections(QJsonArray jsonArray)
 {
-    QStringList keys = jsonObject.keys();
-    foreach (const QString & key, keys)
-        connectionParameters.insert(key, jsonObject.value(key).toVariant().toString().trimmed());
+    foreach (QJsonValue jsonValue, jsonArray) {
+        QJsonObject jsonObject = jsonValue.toObject();
+        QStringList keys = jsonObject.keys();
+        QHash<QString, QString> parameters;
+        foreach (const QString & key, keys)
+            parameters.insert(key, jsonObject.value(key).toVariant().toString().trimmed());
+        connections.append(parameters);
+    }
 }
 
 void WebServerSettings::parsePaths(QJsonArray jsonArray)

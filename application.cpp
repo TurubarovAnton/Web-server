@@ -4,45 +4,50 @@ Application::Application(int argc, char * argv[]) : QCoreApplication(argc, argv)
 {   
     server = new WebServer;
 
-    addApplicationPaths(server->settings->paths);
+    addPaths(server->settings->paths);
 
     postEvent(this, new QEvent(ApplicationStart));
 }
 
 bool Application::event(QEvent * event)
 {
-    if (event->type() == ApplicationStart) {
-        createDatabaseConnection(server->settings->connectionParameters);
+    if (event->type() == ApplicationStart) {        
+
+        QVectorIterator<QHash<QString, QString>> iterator(server->settings->connections);
+        while (iterator.hasNext())
+            createDatabaseConnection(iterator.next());
+
         server->start();
+
         return true;
     }
     return false;
 }
 
-void Application::addApplicationPaths(QStringList paths)
+void Application::addPaths(QStringList paths)
 {
     foreach(const QString & path, paths)
         addLibraryPath(path);
 }
 
-void Application::createDatabaseConnection(QHash<QString, QString> connectionParameters)
+void Application::createDatabaseConnection(QHash<QString, QString> parameters)
 {
-    if (connectionParameters.count() == 0)
+    if (parameters.count() == 0)
         return;
 
-    QString driver = connectionParameters.value("driver");
+    QString driver = parameters.value("driver");
 
     if (driver == NULL)
         return;
 
-    QString connectionName = connectionParameters.value("name");
+    QString connectionName = parameters.value("name");
 
     QSqlDatabase sqlDatabase = QSqlDatabase::addDatabase(driver, connectionName);
-    sqlDatabase.setPort(connectionParameters.value("port").toInt());
-    sqlDatabase.setHostName(connectionParameters.value("host"));
-    sqlDatabase.setDatabaseName(connectionParameters.value("database"));
-    sqlDatabase.setUserName(connectionParameters.value("user"));
-    sqlDatabase.setPassword(connectionParameters.value("password"));
+    sqlDatabase.setPort(parameters.value("port").toInt());
+    sqlDatabase.setHostName(parameters.value("host"));
+    sqlDatabase.setDatabaseName(parameters.value("database"));
+    sqlDatabase.setUserName(parameters.value("user"));
+    sqlDatabase.setPassword(parameters.value("password"));
 
     QTextStream stream(stdout);
     if (!sqlDatabase.isDriverAvailable(driver)) {
@@ -61,8 +66,7 @@ Application::~Application()
 {
     QStringList connectionNames = QSqlDatabase::connectionNames();
     foreach (const QString & connectionName, connectionNames) {
-        QSqlDatabase sqlDatabase = QSqlDatabase::database(connectionName);
-        sqlDatabase.close();
+        QSqlDatabase::database(connectionName).close();
         QSqlDatabase::removeDatabase(connectionName);
     }
 
