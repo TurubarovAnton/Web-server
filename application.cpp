@@ -4,30 +4,17 @@ Application::Application(int argc, char * argv[]) : QCoreApplication(argc, argv)
 {   
     server = new WebServer;
 
-    addPaths(server->settings->paths);
+    WebServerSettings * settings = server->settings;
 
-    postEvent(this, new QEvent(ApplicationStart));
-}
-
-bool Application::event(QEvent * event)
-{
-    if (event->type() == ApplicationStart) {        
-
-        QVectorIterator<QHash<QString, QString>> iterator(server->settings->connections);
-        while (iterator.hasNext())
-            createDatabaseConnection(iterator.next());
-
-        server->start();
-
-        return true;
-    }
-    return false;
-}
-
-void Application::addPaths(QStringList paths)
-{
+    QStringList paths = settings->paths;
     foreach(const QString & path, paths)
         addLibraryPath(path);
+
+    QVectorIterator<QHash<QString, QString>> iterator(server->settings->connections);
+    while (iterator.hasNext())
+        createDatabaseConnection(iterator.next());
+
+    server->start();
 }
 
 void Application::createDatabaseConnection(QHash<QString, QString> parameters)
@@ -50,7 +37,7 @@ void Application::createDatabaseConnection(QHash<QString, QString> parameters)
     sqlDatabase.setPassword(parameters.value("password"));
 
     QTextStream stream(stdout);
-    if (!sqlDatabase.isDriverAvailable(driver)) {
+    if (! sqlDatabase.isDriverAvailable(driver)) {
         stream << "SQL driver not available!\r\n";
         return;
     }

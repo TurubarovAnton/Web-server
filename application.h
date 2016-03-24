@@ -7,6 +7,8 @@
 #include <QStringList>
 #include <QVector>
 #include <QHash>
+#include <iostream>
+#include <QTextStream>
 #include <webserversettings.h>
 #include <webserver.h>
 
@@ -20,13 +22,6 @@ class Application : public QCoreApplication
         WebServer * server;
 
         static void createDatabaseConnection(QHash<QString, QString> parameters);
-    private:
-        const QEvent::Type ApplicationStart = (QEvent::Type)(QEvent::User + 1);
-
-        void addPaths(QStringList paths);
-    protected:
-        bool event(QEvent * event);
-
 };
 
 #endif // APPLICATION_H
